@@ -51,3 +51,19 @@ def _get_top_items(access_token, type, time_range, limit):
         raise HTTPError()
     
     return response.json()['items']
+
+def get_top_genres(access_token, time_range, limit):
+    if (limit is None):
+        limit = 5
+    else:
+        limit = int(limit)
+
+    genres = {}
+
+    for artist in get_top_artists(access_token, time_range, 50):
+        for genre in artist['genres']:
+            genres[genre] = genres.get(genre, 0) + 1
+
+    genres = [i[0] for i in sorted(genres.items(), key=lambda x:x[1], reverse=True)[:limit]]
+
+    print(genres)
