@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 import json
 import authorization
 import stats
+from custom_prints import print_list, print_dict
 
 parser = ArgumentParser()
 
@@ -52,10 +53,6 @@ else:
     except Exception as e:
         print(e)
 
-def print_list(list):
-    for item in list:
-        print(item)
-
 if args.top == 'tracks':
     print_list(stats.get_top_tracks(tokens['access_token'], args.time_range, args.limit))
 elif args.top == 'artists':
@@ -64,4 +61,4 @@ elif args.top == 'genres':
     print_list(stats.get_top_genres(tokens['access_token'], args.time_range, args.limit))
 
 elif args.get_features is not None:
-    print_list(stats.get_audio_features(tokens['access_token'], args.get_features))
+    print_dict(stats.get_audio_features(tokens['access_token'], args.get_features))
