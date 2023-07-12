@@ -7,7 +7,7 @@ parser = ArgumentParser()
 
 parser.add_argument('--auth', action='store_true')
 parser.add_argument('--top', choices=['tracks', 'artists', 'genres'])
-parser.add_argument('--time-range', choices=['short_term', 'medium_term', 'long_term '])
+parser.add_argument('--time-range', choices=['short_term', 'medium_term', 'long_term'])
 parser.add_argument('--limit', choices=[str(i) for i in range(1, 51)])
 
 args = parser.parse_args()

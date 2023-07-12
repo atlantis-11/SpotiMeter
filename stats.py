@@ -52,7 +52,7 @@ def _get_top_items(access_token, type, time_range, limit):
     
     return response.json()['items']
 
-def get_top_genres(access_token, time_range, limit):
+def get_top_genres(access_token, time_range=None, limit=None):
     if (limit is None):
         limit = 5
     else:
@@ -66,4 +66,4 @@ def get_top_genres(access_token, time_range, limit):
 
     genres = [i[0] for i in sorted(genres.items(), key=lambda x:x[1], reverse=True)[:limit]]
 
-    print(genres)
+    return genres
