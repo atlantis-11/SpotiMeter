@@ -8,7 +8,7 @@ def parse_arguments():
     parser = ArgumentParser()
 
     parser.add_argument('--auth', action='store_true', help='add this option if you haven\'t authorized yet and tokens.json file is not present')
-    parser.add_argument('--top', choices=['tracks', 'artists', 'genres'])
+    parser.add_argument('--top', choices=['tracks', 'artists', 'genres', 'features'])
     parser.add_argument('--time-range', choices=['short_term', 'medium_term', 'long_term'])
     parser.add_argument('--limit', help='how many items to return, 1 to 50')
 
@@ -71,6 +71,9 @@ def main():
 
     if args.get_features:
         print_dict(stats.get_audio_features(tokens['access_token'], args.get_features))
+
+    elif args.top == 'features':
+        print_dict(stats.get_top_audio_features(tokens['access_token'], args.time_range))
 
     elif args.top:
         top_functions = {'tracks': stats.get_top_tracks, 'artists': stats.get_top_artists, 'genres': stats.get_top_genres}

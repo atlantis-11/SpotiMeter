@@ -2,6 +2,14 @@ import requests
 from requests.exceptions import HTTPError
 import urllib
 
+def _get_response(url, headers):
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        raise HTTPError()
+    
+    return response
+
 def _get_top_items(access_token, type, time_range, limit): # type is either artists or tracks
     data = {}
 
@@ -16,10 +24,7 @@ def _get_top_items(access_token, type, time_range, limit): # type is either arti
         'Authorization': f'Bearer {access_token}'
     }
 
-    response = requests.get(url, headers=headers)
-
-    if response.status_code != 200:
-        raise HTTPError()
+    response = _get_response(url, headers)
     
     return response.json()['items']
 
@@ -75,9 +80,30 @@ def get_audio_features(access_token: str, track_id: str):
         'Authorization': f'Bearer {access_token}'
     }
 
-    response = requests.get(url, headers=headers)
-
-    if response.status_code != 200:
-        raise HTTPError()
+    response = _get_response(url, headers)
     
-    return(response.json())
+    return {k: v for k, v in response.json().items() if type(v) == float}
+
+def get_top_audio_features(access_token: str, time_range=None):
+    ids = [track['id'] for track in get_top_tracks(access_token, time_range, 50)]
+
+    url = f'https://api.spotify.com/v1/audio-features?ids={",".join(ids)}'
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+
+    response = _get_response(url, headers)
+    
+    top_features = {}
+
+    for track in response.json()['audio_features']:
+        for k, v in track.items():
+            if type(v) == float:
+                top_features[k] = top_features.get(k, 0) + v
+
+    track_count = len(response.json()['audio_features'])
+
+    for k, v in top_features.items():
+        top_features[k] = round(v / track_count, 2)
+
+    return top_features
