@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 import json
 import authorization
 import stats
-from custom_prints import print_list, print_dict
+from custom_prints import print_list_of_dicts, print_list, print_dict
 
 def parse_arguments():
     parser = ArgumentParser()
@@ -69,17 +69,25 @@ def main():
         except Exception as e:
             print(e)
 
-    if args.get_features:
-        print_dict(stats.get_audio_features(tokens['access_token'], args.get_features))
+    if args.top == 'artists':
+        res = stats.get_top_artists(tokens['access_token'], args.time_range, args.limit)
+        print_list_of_dicts(res)
+
+    elif args.top == 'tracks':
+        res = stats.get_top_tracks(tokens['access_token'], args.time_range, args.limit)
+        print_list_of_dicts(res)
+
+    elif args.top == 'genres':
+        res = stats.get_top_genres(tokens['access_token'], args.time_range, args.limit)
+        print_list(res)
 
     elif args.top == 'features':
-        print_dict(stats.get_top_audio_features(tokens['access_token'], args.time_range))
+        res = stats.get_top_audio_features(tokens['access_token'], args.time_range)
+        print_dict(res, headers=['Feature', 'Value'])
 
-    elif args.top:
-        top_functions = {'tracks': stats.get_top_tracks, 'artists': stats.get_top_artists, 'genres': stats.get_top_genres}
-        get_top = top_functions[args.top]
-
-        print_list(get_top(tokens['access_token'], args.time_range, args.limit))
+    elif args.get_features:
+        res = stats.get_audio_features(tokens['access_token'], args.get_features)
+        print_dict(res, headers=['Feature', 'Value'])
 
 if __name__ == '__main__':
     main()
