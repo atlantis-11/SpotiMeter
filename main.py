@@ -1,8 +1,8 @@
-from argparse import ArgumentParser
-import json
 import authorization
 import stats
-from custom_prints import print_list_of_dicts, print_list, print_dict
+from argparse import ArgumentParser
+from custom_prints import *
+from json_handler import *
 
 def parse_arguments():
     parser = ArgumentParser()
@@ -15,22 +15,6 @@ def parse_arguments():
     parser.add_argument('--get-features', metavar='TRACK_ID')
 
     return parser.parse_args()
-
-def load_from_json(filename):
-    try:
-        with open(filename, 'r') as f:
-            return json.load(f)
-        
-    except FileNotFoundError:
-        raise FileNotFoundError(f'No {filename} file')
-    
-def save_to_json(filename, dict):
-    try:
-        with open(filename, 'w') as f:
-            json.dump(dict, f)
-
-    except FileNotFoundError:
-        raise FileNotFoundError(f'No {filename} file')
 
 def main():
     args = parse_arguments()
